@@ -20,11 +20,17 @@ use proptest_derive::Arbitrary;
 
 pub mod srm_token {
     use solana_program::declare_id;
+    #[cfg(feature = "devnet")]
+    declare_id!("9FbAMDvXqNjPqZSYt4EWTguJuDrGkfvwr3gSFpiSbX9S");
+    #[cfg(not(feature = "devnet"))]
     declare_id!("SRMuApVNdxXokk5GT7XD5cUUgXMBCoAz2LHeuAoKWRt");
 }
 
 pub mod msrm_token {
     use solana_program::declare_id;
+    #[cfg(feature = "devnet")]
+    declare_id!("9ysywkpvyvxaaezq2Dapj1p1gHPP3U3D3ccTTecVfYHe");
+    #[cfg(not(feature = "devnet"))]
     declare_id!("MSRMcoVyrFxnSgo5uXwone5SKcGhT1KEJMFEkMEWf9L");
 }
 
