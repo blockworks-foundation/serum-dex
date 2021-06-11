@@ -30,7 +30,7 @@ pub mod srm_token {
 pub mod msrm_token {
     use solana_program::declare_id;
     #[cfg(feature = "devnet")]
-    declare_id!("9ysywkpvyvxaaezq2Dapj1p1gHPP3U3D3ccTTecVfYHe");
+    declare_id!("934bNdNw9QfE8dXD4mKQiKajYURfSkPhxfYZzpvmygca");
     #[cfg(not(feature = "devnet"))]
     declare_id!("MSRMcoVyrFxnSgo5uXwone5SKcGhT1KEJMFEkMEWf9L");
 }
