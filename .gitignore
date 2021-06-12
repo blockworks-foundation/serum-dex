@@ -4,3 +4,4 @@ target/
 *~
 *.swp
 *.swo
+ids.json
