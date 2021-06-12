@@ -21,6 +21,7 @@ use safe_transmute::{
     transmute_many, transmute_many_pedantic, transmute_one_pedantic,
 };
 use sloggers::file::FileLoggerBuilder;
+use sloggers::terminal::TerminalLoggerBuilder;
 use sloggers::types::Severity;
 use sloggers::Build;
 use solana_client::rpc_client::RpcClient;
@@ -131,7 +132,7 @@ pub enum Command {
         #[clap(long)]
         num_accounts: Option<usize>,
         #[clap(long)]
-        log_directory: String,
+        log_directory: Option<String>,
         #[clap(long)]
         max_q_length: Option<u64>,
         #[clap(long)]
@@ -488,16 +489,28 @@ fn hash_accounts(val: &[u64; 4]) -> u64 {
     val.iter().fold(0, |a, b| b.wrapping_add(a))
 }
 
-fn init_logger(log_directory: &str) {
-    let path = std::path::Path::new(log_directory);
-    let parent = path.parent().unwrap();
-    std::fs::create_dir_all(parent).unwrap();
-    let mut builder = FileLoggerBuilder::new(log_directory);
-    builder.level(Severity::Info).rotate_size(8 * 1024 * 1024);
-    let log = builder.build().unwrap();
-    let _guard = slog_scope::set_global_logger(log);
-    _guard.cancel_reset();
-    slog_stdlog::init().unwrap();
+fn init_logger(log_directory: &Option<String>) {
+    match log_directory {
+        Some(log_directory) => {
+            let path = std::path::Path::new(&log_directory);
+            let parent = path.parent().unwrap();
+            std::fs::create_dir_all(parent).unwrap();
+            let mut builder = FileLoggerBuilder::new(&log_directory);
+            builder.level(Severity::Info).rotate_size(8 * 1024 * 1024);
+            let log = builder.build().unwrap();
+            let _guard = slog_scope::set_global_logger(log);
+            _guard.cancel_reset();
+            slog_stdlog::init().unwrap();
+        }
+        None => {
+            let mut builder = TerminalLoggerBuilder::new();
+            builder.level(Severity::Info);
+            let log = builder.build().unwrap();
+            let _guard = slog_scope::set_global_logger(log);
+            _guard.cancel_reset();
+            slog_stdlog::init().unwrap();
+        }
+    }
 }
 
 fn consume_events_loop(
